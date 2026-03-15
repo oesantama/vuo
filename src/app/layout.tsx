@@ -20,6 +20,15 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#020617" />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js');
+              });
+            }
+          `
+        }} />
       </head>
       <body className={`${inter.className} bg-slate-950 text-slate-100 min-h-screen overflow-x-hidden`}>
         <div className="flex flex-col min-h-screen max-w-md mx-auto border-x border-slate-800 shadow-2xl bg-slate-900/50 backdrop-blur-xl">
