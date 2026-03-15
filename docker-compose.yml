@@ -1,0 +1,14 @@
+services:
+  vuo:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - projects_data:/app/projects
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    restart: always
+
+volumes:
+  projects_data:

@@ -1,0 +1,17 @@
+{
+  "name": "VUO - Vibe Code Universal de Oscar",
+  "short_name": "VUO",
+  "description": "Programa tus proyectos con IA desde tu móvil.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2586/2586488.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
