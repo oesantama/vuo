@@ -2,6 +2,7 @@
 import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useOfflineSync } from '@/lib/offlineSync';
+import Link from 'next/link';
 
 export default function Home() {
   const { isOnline, pendingPrompts } = useOfflineSync();
