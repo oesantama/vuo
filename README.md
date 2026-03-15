@@ -45,6 +45,16 @@ Vuo es una aplicación full-stack construida con Next.js, diseñada para la gest
     ```
     La aplicación estará disponible en `http://localhost:3000`.
 
+### 🔍 Cómo probar cambios localmente (Pre-visualización)
+
+Antes de subir tus cambios a GitHub, puedes ver cómo se verán en tu propia máquina:
+
+1. Abre una terminal en la carpeta `vuo`.
+2. Ejecuta: `npm run dev`
+3. Abre tu navegador en: `http://localhost:3000` (o el puerto que te indique la terminal).
+
+De esta forma, puedes validar el diseño responsive y el funcionamiento sin afectar la versión que está en producción.
+
 ## 🐳 Despliegue con Docker
 
 ### Usando Docker Compose
