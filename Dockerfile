@@ -10,16 +10,20 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+# No forzamos NODE_ENV a production aquí para permitir el servidor de desarrollo
 ENV PORT 3000
 
-# Añadir Git para manejar repositorios
-RUN apk add --no-cache git
+# Añadir herramientas necesarias
+RUN apk add --no-cache git bash
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+# Copiar todo el código y dependencias para permitir modo desarrollo
+COPY --from=builder /app ./
 
 EXPOSE 3000
+EXPOSE 3001
 
-CMD ["node", "server.js"]
+# Script de inicio dual
+RUN echo -e '#!/bin/sh\nnpm run dev -- -p 3001 & \nnode .next/standalone/server.js' > start.sh
+RUN chmod +x start.sh
+
+CMD ["./start.sh"]
