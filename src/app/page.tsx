@@ -67,20 +67,22 @@ export default function Home() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           {projects.map((project) => (
-            <div key={project.id} className="p-5 rounded-3xl glass-card group cursor-pointer relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-                <Github size={40} />
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-indigo-500/20 rounded-2xl text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                  <FolderCode size={24} />
+            <Link key={project.id} href={`/project/${project.id}`}>
+              <div className="p-5 rounded-3xl glass-card group cursor-pointer relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                  <Github size={40} />
                 </div>
-                <div className="space-y-1">
-                  <h3 className="font-bold text-slate-100">{project.name}</h3>
-                  <p className="text-xs text-slate-400 font-mono">{project.repo}</p>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-indigo-500/20 rounded-2xl text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                    <FolderCode size={24} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-slate-100">{project.name}</h3>
+                    <p className="text-xs text-slate-400 font-mono">{project.repo}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

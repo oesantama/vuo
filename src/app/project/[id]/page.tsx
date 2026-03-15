@@ -41,6 +41,28 @@ export default function ProjectEditor({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleDeploy = async () => {
+    setIsLoading(true);
+    setChat(prev => [...prev, { role: 'ai', content: 'Iniciando despliegue final a GitHub...' }]);
+    try {
+      const res = await fetch('/api/git/push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId: params.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setChat(prev => [...prev, { role: 'ai', content: '¡Despliegue completado con éxito! Coolify actualizará la app en unos minutos.' }]);
+      } else {
+        setChat(prev => [...prev, { role: 'ai', content: 'Error en despliegue: ' + data.error }]);
+      }
+    } catch (e) {
+      setChat(prev => [...prev, { role: 'ai', content: 'Error de red al intentar desplegar.' }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden">
       {/* Header */}
@@ -52,7 +74,11 @@ export default function ProjectEditor({ params }: { params: { id: string } }) {
           <h1 className="font-bold text-gradient">Vibe Editor</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 py-2 px-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition-all shadow-lg shadow-green-600/20 active:scale-95">
+          <button 
+            onClick={handleDeploy}
+            disabled={isLoading}
+            className="flex items-center gap-2 py-2 px-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition-all shadow-lg shadow-green-600/20 active:scale-95 disabled:opacity-50"
+          >
             <CheckCircle2 size={16} />
             <span>Desplegar</span>
           </button>
