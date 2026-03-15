@@ -1,6 +1,6 @@
 'use client';
-import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles } from 'lucide-react';
+import { useState } from 'react';
 import { useOfflineSync } from '@/lib/offlineSync';
 import Link from 'next/link';
 
@@ -9,7 +9,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', repo: '' });
   const [projects, setProjects] = useState([
-    { id: 'poc', name: 'Milla 7 - Logística', repo: 'oscar/milla7-vuo' }
+    { id: 'vuo-dev', name: 'Sistema VUO - Core', repo: 'oesantama/vuo' }
   ]);
 
   const handleAddProject = (e: React.FormEvent) => {
@@ -22,137 +22,147 @@ export default function Home() {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-8 animate-slide-up">
-      {/* Offline Alert */}
-      {!isOnline && (
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-400 glass">
-          <WifiOff size={20} />
-          <div className="text-sm">
-            <p className="font-bold">Modo Offline Detectado</p>
-            <p className="opacity-80 text-xs">Tus cambios se guardarán localmente y se sincronizarán cuando vuelvas a tener señal.</p>
+    <div className="min-h-screen bg-[#020617] text-slate-100 font-sans">
+      <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-10">
+        
+        {/* Branding & Explanation */}
+        <header className="space-y-4 pt-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-600/30">
+              <Sparkles className="text-white" size={24} />
+            </div>
+            <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+              VUO
+            </h1>
           </div>
-        </div>
-      )}
-
-      {/* Hero Section */}
-      <section className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight text-gradient">Dashboard</h2>
-        <p className="text-slate-400 text-sm">Gestiona tus micro-proyectos con el poder de IA.</p>
-      </section>
-
-      {/* Sync Status */}
-      {pendingPrompts.length > 0 && isOnline && (
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 glass">
-          <div className="flex items-center gap-3 text-sm font-medium">
-            <RefreshCcw size={18} className="animate-spin" />
-            <span>{pendingPrompts.length} cambios pendientes de sincronizar</span>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-slate-100">Vibe-Coding Platform</h2>
+            <p className="text-slate-400 leading-relaxed">
+              VUO es un sistema inteligente que te permite programar y desplegar aplicaciones directamente desde tu servidor. 
+              Utiliza IA para escribir código, previsualizar cambios en vivo y sincronizar todo con tu repositorio de GitHub de forma profesional.
+            </p>
           </div>
-          <button className="text-xs font-bold uppercase py-2 px-4 rounded-xl bg-blue-500 text-white shadow-lg shadow-blue-500/25 hover:bg-blue-400 transition-all">
-            Sincronizar
-          </button>
-        </div>
-      )}
+        </header>
 
-      {/* Projects Grid */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center px-1">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500">Mis Repositorios</h3>
-          <button 
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 py-2 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition-all shadow-lg shadow-indigo-600/30 active:scale-95"
-          >
-            <Plus size={18} />
-            <span>Añadir</span>
-          </button>
-        </div>
+        {/* Offline Alert */}
+        {!isOnline && (
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-400 animate-pulse bg-slate-900/50 backdrop-blur-xl">
+            <WifiOff size={20} />
+            <div className="text-sm">
+              <p className="font-bold">Modo Offline</p>
+              <p className="opacity-80">Edita sin conexión. Los cambios se subirán al volver a línea.</p>
+            </div>
+          </div>
+        )}
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {projects.map((project) => (
-            <Link key={project.id} href={`/project/${project.id}`}>
-              <div className="p-5 rounded-3xl glass-card group cursor-pointer relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
-                  <Github size={40} />
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-indigo-500/20 rounded-2xl text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                    <FolderCode size={24} />
+        {/* Projects Section */}
+        <section className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Tus Proyectos</h3>
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 py-2 px-5 rounded-full bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-400 transition-all text-sm font-bold active:scale-95"
+            >
+              <Plus size={16} />
+              Añadir Repositorio
+            </button>
+          </div>
+
+          <div className="grid gap-4">
+            {projects.map((project) => (
+              <Link key={project.id} href={`/project/${project.id}`}>
+                <div className="p-5 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800/60 transition-all group overflow-hidden relative">
+                  <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                    <Github size={120} />
                   </div>
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-slate-100">{project.name}</h3>
-                    <p className="text-xs text-slate-400 font-mono">{project.repo}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-indigo-500/10 rounded-2xl text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                        <FolderCode size={24} />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-lg text-slate-200">{project.name}</h4>
+                        <p className="text-xs text-slate-500 font-mono flex items-center gap-1">
+                          <Github size={12} /> {project.repo}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-full border border-slate-800 group-hover:bg-slate-700">
+                      <Zap size={16} className="text-slate-500 group-hover:text-yellow-400" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Guide Section */}
+        <section className="pt-6 space-y-6 border-t border-slate-800/50">
+          <div className="flex items-center gap-2">
+            <Info size={16} className="text-indigo-400" />
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">¿Cómo funciona?</h3>
+          </div>
+          
+          <div className="space-y-4">
+            <GuideItem 
+              num="01"
+              title="Vincula tu Proyecto"
+              desc="Añade un repositorio de GitHub que quieras modificar. VUO lo clonará en tu servidor de forma privada."
+            />
+            <GuideItem 
+              num="02"
+              title="Vibe-Coding (IA)"
+              desc="Entra al editor y pide cambios en lenguaje natural. VUO escribirá el código y te mostrará una previsualización real."
+            />
+            <GuideItem 
+              num="03"
+              title="Despliegue Seguro"
+              desc="Una vez estés contento con el resultado, dale a 'Desplegar'. Los cambios se subirán a GitHub y se publicarán."
+            />
+          </div>
+        </section>
       </div>
 
-      {/* How it works Section */}
-      <section className="pt-4 space-y-4">
-        <div className="flex items-center gap-2 px-1">
-          <Info size={16} className="text-indigo-400" />
-          <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500">¿Cómo funciona VUO?</h3>
-        </div>
-        
-        <div className="grid gap-3">
-          <Step 
-            icon={<Plus size={18} />} 
-            title="Añade tu Repo" 
-            desc="Vincula la URL de tu repositorio de GitHub para empezar." 
-          />
-          <Step 
-            icon={<Zap size={18} />} 
-            title="Chat con IA" 
-            desc="Pide cambios o nuevas funciones usando lenguaje natural." 
-          />
-          <Step 
-            icon={<GitBranch size={18} />} 
-            title="Sincronización" 
-            desc="VUO escribe el código y hace el commit/push automáticamente por ti." 
-          />
-        </div>
-      </section>
-
-      {/* Modal for adding projects */}
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-          <div className="w-full max-w-sm glass rounded-3xl p-6 space-y-6 animate-slide-up border border-white/20">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 space-y-8 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold text-gradient">Nuevo Proyecto</h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400">
+              <h3 className="text-xl font-bold">Nuevo Repositorio</h3>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-500">
                 <X size={20} />
               </button>
             </div>
             
-            <form onSubmit={handleAddProject} className="space-y-4">
+            <form onSubmit={handleAddProject} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1">Nombre del Proyecto</label>
+                <label className="text-xs font-black text-slate-500 uppercase px-1">Nombre</label>
                 <input 
                   autoFocus
                   required
-                  placeholder="Ej: Milla 7 Logística"
-                  className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
+                  placeholder="Ej: Mi App Increíble"
+                  className="w-full bg-slate-950 border border-slate-800 p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-700"
                   value={newProject.name}
                   onChange={e => setNewProject({...newProject, name: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1">Repo GitHub (usuario/repo)</label>
+                <label className="text-xs font-black text-slate-500 uppercase px-1">Repo GitHub</label>
                 <input 
                   required
-                  placeholder="Ej: oesantama/vuo"
-                  className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
+                  placeholder="usuario/repositorio"
+                  className="w-full bg-slate-950 border border-slate-800 p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-700"
                   value={newProject.repo}
                   onChange={e => setNewProject({...newProject, repo: e.target.value})}
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-600/20 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2"
               >
                 <Send size={18} />
-                <span>Registrar Proyecto</span>
+                Guardar Proyecto
               </button>
             </form>
           </div>
@@ -162,15 +172,13 @@ export default function Home() {
   );
 }
 
-function Step({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+function GuideItem({ num, title, desc }: { num: string, title: string, desc: string }) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-2xl glass border-none bg-indigo-500/5">
-      <div className="mt-1 p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
-        {icon}
-      </div>
-      <div>
-        <h4 className="font-bold text-slate-200 text-sm">{title}</h4>
-        <p className="text-xs text-slate-400 mt-1 leading-relaxed">{desc}</p>
+    <div className="flex gap-4 group">
+      <div className="text-2xl font-black text-slate-800 group-hover:text-indigo-900/50 transition-colors tabular-nums">{num}</div>
+      <div className="space-y-1">
+        <h4 className="font-bold text-slate-200">{title}</h4>
+        <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
       </div>
     </div>
   );
