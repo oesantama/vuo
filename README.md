@@ -55,6 +55,19 @@ Antes de subir tus cambios a GitHub, puedes ver cómo se verán en tu propia má
 
 De esta forma, puedes validar el diseño responsive y el funcionamiento sin afectar la versión que está en producción.
 
+### 🐳 Validación con Docker (Fiel al Servidor)
+
+Si quieres probar el proyecto en un entorno virtual idéntico al de Coolify antes de subirlo:
+
+1. Asegúrate de tener **Docker Desktop** instalado.
+2. En la terminal ejecuta:
+   ```bash
+   docker-compose up --build
+   ```
+3. Accede a: `http://localhost:3005` (el puerto configurado para no chocar).
+
+Esto asegura que el despliegue no fallará por errores de configuración en el servidor.
+
 ## 🐳 Despliegue con Docker
 
 ### Usando Docker Compose
