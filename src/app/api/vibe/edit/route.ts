@@ -4,7 +4,10 @@ import fs from "fs/promises";
 import path from "path";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash",
+  apiVersion: 'v1'
+} as any);
 
 export async function POST(req: Request) {
   try {
