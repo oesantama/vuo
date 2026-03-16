@@ -3,13 +3,17 @@ import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 
-// Usamos Gemini 2.0 Flash (Habilitado para esta API Key) para máxima potencia y evitar errores 404
+// Usamos Gemini 2.0 Flash (Habilitado para esta API Key)
+const MODEL_NAME = "gemini-2.0-flash";
+console.log(`[VUO_IA_SYNC] CARGANDO_MODELO: ${MODEL_NAME}`);
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
 export async function POST(req: Request) {
   try {
     const { instruction, projectId, currentFile } = await req.json();
+    console.log(`[VUO_IA_EXE] PROCESANDO_INSTRUCCIÓN: ${instruction.substring(0, 20)}...`);
 
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json({ error: "Falta GEMINI_API_KEY" }, { status: 500 });
