@@ -125,8 +125,8 @@ export default function ProjectEditor({ params }: { params: Promise<{ id: string
               <div className="absolute -top-3 left-4 bg-black px-2 text-[9px] font-bold opacity-40 tracking-widest text-[#00FF41]">INPUT_STREAM</div>
               <textarea 
                 rows={3}
-                placeholder="Escribe tu instrucción aquí... (ej: 'Crea una sección de productos')"
-                className="w-full bg-black border border-[#00FF41]/30 p-4 pt-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/20 text-sm resize-none pr-14 font-sans no-scrollbar"
+                placeholder="ESCRIBE TU INSTRUCCIÓN AQUÍ... (EJ: 'CAMBIA EL COLOR DE LA PÁGINA')"
+                className="w-full bg-black border-2 border-[#00FF41]/40 p-4 pt-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/40 text-white text-sm resize-none pr-14 font-sans no-scrollbar shadow-inner"
                 value={instruction}
                 onChange={e => setInstruction(e.target.value)}
               />

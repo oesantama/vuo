@@ -11,10 +11,14 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', repo: '', token: '' });
   const [projects, setProjects] = useState<any[]>([]);
+  const [notification, setNotification] = useState<{ msg: string, type: 'error' | 'success' | 'info' } | null>(null);
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   const fetchProjects = async () => {
     try {
@@ -55,11 +59,12 @@ export default function Home() {
         await fetchProjects();
         setIsModalOpen(false);
         setNewProject({ name: '', repo: '', token: '' });
+        setNotification({ msg: 'ENTIDAD_VINCULADA_CON_ÉXITO', type: 'success' });
       } else {
-        alert("Error de clonación: " + cloneData.error);
+        setNotification({ msg: 'FALLO_EN_CLONACIÓN: ' + cloneData.error, type: 'error' });
       }
     } catch (e: any) {
-      alert("Error crítico: " + e.message);
+      setNotification({ msg: 'ERROR_SISTÉMICO: ' + e.message, type: 'error' });
     } finally {
       setIsCreating(false);
     }
@@ -168,6 +173,22 @@ export default function Home() {
         </section>
       </main>
 
+      {/* Notificaciones HUD */}
+      {notification && (
+        <div className={`fixed bottom-8 right-8 z-[200] p-5 border-l-4 shadow-2xl flex items-center gap-4 animate-in slide-in-from-right duration-300 ${
+          notification.type === 'error' ? 'bg-red-950 border-red-500 text-red-200' : 'bg-black border-[#00FF41] text-[#00FF41]'
+        }`}>
+          {notification.type === 'error' ? <AlertCircle size={20} /> : <Zap size={20} />}
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black tracking-[0.3em] opacity-50 uppercase">Notificación Local</span>
+            <span className="text-xs font-bold font-mono">{notification.msg}</span>
+          </div>
+          <button onClick={() => setNotification(null)} className="ml-4 opacity-30 hover:opacity-100">
+             <X size={14} />
+          </button>
+        </div>
+      )}
+
       {/* Modal Futurista */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/98 backdrop-blur-2xl">
@@ -186,8 +207,8 @@ export default function Home() {
                   autoFocus
                   required
                   disabled={isCreating}
-                  placeholder="Ej: Dashboard_Analitica"
-                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white disabled:opacity-30"
+                  placeholder="DIGITA EL NOMBRE DEL PROYECTO"
+                  className="w-full bg-black border-2 border-[#00FF41]/30 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/40 text-white disabled:opacity-30 text-lg font-black"
                   value={newProject.name}
                   onChange={e => setNewProject({...newProject, name: e.target.value})}
                 />
@@ -197,8 +218,8 @@ export default function Home() {
                 <input 
                   required
                   disabled={isCreating}
-                  placeholder="https://github.com/vuo/core"
-                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white disabled:opacity-30"
+                  placeholder="HTTPS://GITHUB.COM/USUARIO/REPO"
+                  className="w-full bg-black border-2 border-[#00FF41]/30 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/40 text-white disabled:opacity-30 text-sm font-bold"
                   value={newProject.repo}
                   onChange={e => setNewProject({...newProject, repo: e.target.value})}
                 />
@@ -210,8 +231,8 @@ export default function Home() {
                 <input 
                   type="password"
                   disabled={isCreating}
-                  placeholder="ghp_xxxxxxxxxxxx"
-                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white disabled:opacity-30"
+                  placeholder="GHP_TOKEN_SEGURIDAD_GITHUB"
+                  className="w-full bg-black border-2 border-[#00FF41]/30 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/40 text-white disabled:opacity-30"
                   value={newProject.token}
                   onChange={e => setNewProject({...newProject, token: e.target.value})}
                 />
