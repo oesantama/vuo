@@ -47,7 +47,13 @@ export default function Home() {
         body: JSON.stringify({ ...newProject, id: projectId }),
       });
 
+      if (!resProj.ok) {
+        const err = await resProj.json();
+        throw new Error(err.error || "No se pudo registrar el proyecto en la base de datos.");
+      }
+
       // 2. Iniciar clonación real
+      setNotification({ msg: 'INICIANDO_CLONACIÓN_GIT...', type: 'info' });
       const resClone = await fetch('/api/git/clone', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,10 +62,10 @@ export default function Home() {
 
       const cloneData = await resClone.json();
       if (cloneData.success) {
+        setNotification({ msg: 'ENTIDAD_VINCULADA_CON_ÉXITO', type: 'success' });
         await fetchProjects();
         setIsModalOpen(false);
         setNewProject({ name: '', repo: '', token: '' });
-        setNotification({ msg: 'ENTIDAD_VINCULADA_CON_ÉXITO', type: 'success' });
       } else {
         setNotification({ msg: 'FALLO_EN_CLONACIÓN: ' + cloneData.error, type: 'error' });
       }
