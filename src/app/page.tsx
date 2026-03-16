@@ -1,5 +1,5 @@
 'use client';
-import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles, Cpu, Lock, Shield, LayoutDashboard, Settings } from 'lucide-react';
+import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles, Cpu, Lock, Shield, LayoutDashboard, Settings, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import { useOfflineSync } from '@/lib/offlineSync';
 import Link from 'next/link';
