@@ -1,4 +1,7 @@
-import { use } from 'react';
+'use client';
+import { useState, use } from 'react';
+import { Send, ChevronLeft, Github, Smartphone, Laptop, Monitor, CheckCircle2, Terminal as TerminalIcon, ShieldCheck, Zap, Cpu, Sparkles, AlertCircle, Lock, RefreshCcw } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ProjectEditor({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
