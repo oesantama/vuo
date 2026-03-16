@@ -1,23 +1,66 @@
-'use client';
-import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles, Cpu, Lock, Shield, LayoutDashboard, HelpCircle, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles, Cpu, Lock, Shield, LayoutDashboard, HelpCircle, ArrowRight, Loader2, Key } from 'lucide-react';
 import { useOfflineSync } from '@/lib/offlineSync';
 import Link from 'next/link';
 
 export default function Home() {
   const { isOnline } = useOfflineSync();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProject, setNewProject] = useState({ name: '', repo: '' });
-  const [projects, setProjects] = useState([
-    { id: 'vuo-dev', name: 'SISTEMA_VUO_NUCLEO', repo: 'oesantama/vuo' }
-  ]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
+  const [newProject, setNewProject] = useState({ name: '', repo: '', token: '' });
+  const [projects, setProjects] = useState<any[]>([]);
 
-  const handleAddProject = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch('/api/projects');
+      const data = await res.json();
+      setProjects(data);
+    } catch (e) {
+      console.error("Error cargando proyectos:", e);
+    } finally {
+      setIsLoadingProjects(false);
+    }
+  };
+
+  const handleAddProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newProject.name && newProject.repo) {
-      setProjects([...projects, { id: Date.now().toString(), ...newProject }]);
-      setNewProject({ name: '', repo: '' });
-      setIsModalOpen(false);
+    if (!newProject.name || !newProject.repo) return;
+
+    setIsCreating(true);
+    const projectId = newProject.name.toLowerCase().replace(/\s+/g, '-');
+
+    try {
+      // 1. Guardar en la base de datos de persistencia
+      const resProj = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newProject, id: projectId }),
+      });
+
+      // 2. Iniciar clonación real
+      const resClone = await fetch('/api/git/clone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ repo: newProject.repo, projectId, token: newProject.token }),
+      });
+
+      const cloneData = await resClone.json();
+      if (cloneData.success) {
+        await fetchProjects();
+        setIsModalOpen(false);
+        setNewProject({ name: '', repo: '', token: '' });
+      } else {
+        alert("Error de clonación: " + cloneData.error);
+      }
+    } catch (e: any) {
+      alert("Error crítico: " + e.message);
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -61,7 +104,7 @@ export default function Home() {
             </p>
             <div className="flex gap-4">
                <button onClick={() => setIsModalOpen(true)} className="px-8 py-3 bg-[#00FF41] text-black font-black uppercase text-xs tracking-widest hover:bg-white transition-all shadow-lg shadow-[#00FF41]/20">
-                  Empezar Ahora
+                  Vincular Nuevo Proyecto
                </button>
             </div>
           </div>
@@ -85,30 +128,42 @@ export default function Home() {
              <h3 className="text-xl font-bold tracking-tighter flex items-center gap-2">
                 <LayoutDashboard size={20} /> MIS_PROYECTOS_ACTIVOS
              </h3>
-             <button onClick={() => setIsModalOpen(true)} className="text-[10px] font-black hover:neon-text transition-all tracking-widest underline decoration-[#00FF41]/40 decoration-wavy">
-                [ GESTIONAR_ENTIDADES ]
+             <button onClick={fetchProjects} className="text-[10px] font-black hover:neon-text transition-all tracking-widest flex items-center gap-2">
+                <RefreshCcw size={12} className={isLoadingProjects ? 'animate-spin' : ''} /> REFRESCAR_RED
              </button>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <Link key={project.id} href={`/project/${project.id}`}>
-                <div className="cyber-panel p-8 group cursor-pointer border-[#00FF41]/10 hover:border-[#00FF41]/60 transition-all hover:bg-[#00FF41]/5 relative overflow-hidden">
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="p-4 bg-black border border-[#00FF41]/30 group-hover:shadow-[0_0_15px_#00FF4133]">
-                      <FolderCode size={32} />
+          {isLoadingProjects ? (
+            <div className="flex flex-col items-center justify-center py-20 opacity-30">
+               <Loader2 size={40} className="animate-spin mb-4" />
+               <p className="text-xs tracking-[0.5em]">CARGANDO_DATOS_NEURALES...</p>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="p-12 border-2 border-dashed border-[#00FF41]/20 text-center space-y-4">
+               <p className="text-sm opacity-40">No se detectan entidades vinculadas en este nodo.</p>
+               <button onClick={() => setIsModalOpen(true)} className="text-[#00FF41] font-bold underline">[ VINCULAR_PRIMER_PROYECTO ]</button>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {projects.map((project) => (
+                <Link key={project.id} href={`/project/${project.id}`}>
+                  <div className="cyber-panel p-8 group cursor-pointer border-[#00FF41]/10 hover:border-[#00FF41]/60 transition-all hover:bg-[#00FF41]/5 relative overflow-hidden">
+                    <div className="flex justify-between items-start mb-8">
+                      <div className="p-4 bg-black border border-[#00FF41]/30 group-hover:shadow-[0_0_15px_#00FF4133]">
+                        <FolderCode size={32} />
+                      </div>
+                      <ArrowRight size={20} className="translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
                     </div>
-                    <ArrowRight size={20} className="translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
+                    <h4 className="text-xl font-black mb-2 group-hover:neon-text uppercase tracking-tighter">{project.name}</h4>
+                    <p className="text-[10px] opacity-40 font-mono flex items-center gap-1 overflow-hidden">
+                      <Github size={10} /> {project.repo.replace('https://', '')}
+                    </p>
+                    <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#00FF41] group-hover:w-full transition-all duration-500" />
                   </div>
-                  <h4 className="text-xl font-black mb-2 group-hover:neon-text">{project.name}</h4>
-                  <p className="text-[10px] opacity-40 font-mono flex items-center gap-1">
-                    <Github size={10} /> {project.repo}
-                  </p>
-                  <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#00FF41] group-hover:w-full transition-all duration-500" />
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </main>
 
@@ -118,7 +173,7 @@ export default function Home() {
           <div className="cyber-panel w-full max-w-md p-10 space-y-10 border-2 border-[#00FF41]/40">
             <div className="flex justify-between items-center border-b border-[#00FF41]/20 pb-6">
               <h3 className="text-2xl font-black neon-text uppercase tracking-tighter">Nueva Conexión</h3>
-              <button onClick={() => setIsModalOpen(false)} className="hover:rotate-90 transition-transform">
+              <button onClick={() => !isCreating && setIsModalOpen(false)} className="hover:rotate-90 transition-transform">
                 <X size={24} />
               </button>
             </div>
@@ -129,29 +184,59 @@ export default function Home() {
                 <input 
                   autoFocus
                   required
+                  disabled={isCreating}
                   placeholder="Ej: Dashboard_Analitica"
-                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white"
+                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white disabled:opacity-30"
                   value={newProject.name}
                   onChange={e => setNewProject({...newProject, name: e.target.value})}
                 />
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] uppercase font-bold tracking-[0.3em] opacity-40 px-1">Endpoint de GitHub (usuario/repo)</label>
+                <label className="text-[10px] uppercase font-bold tracking-[0.3em] opacity-40 px-1">URL de Repositorio (https)</label>
                 <input 
                   required
-                  placeholder="vuo/core-system"
-                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white"
+                  disabled={isCreating}
+                  placeholder="https://github.com/vuo/core"
+                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white disabled:opacity-30"
                   value={newProject.repo}
                   onChange={e => setNewProject({...newProject, repo: e.target.value})}
                 />
               </div>
-              <button type="submit" className="w-full py-5 bg-[#00FF41] text-black font-black uppercase text-sm tracking-[0.4em] hover:bg-white transition-all shadow-[0_10px_30px_#00FF4144]">
-                Vincular Ahora
+              <div className="space-y-3">
+                <label className="text-[10px] uppercase font-bold tracking-[0.3em] opacity-40 px-1 flex items-center gap-2">
+                   <Key size={10} /> GitHub Personal Access Token (Opcional)
+                </label>
+                <input 
+                  type="password"
+                  disabled={isCreating}
+                  placeholder="ghp_xxxxxxxxxxxx"
+                  className="w-full bg-black border-2 border-[#00FF41]/10 p-5 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white disabled:opacity-30"
+                  value={newProject.token}
+                  onChange={e => setNewProject({...newProject, token: e.target.value})}
+                />
+                <p className="text-[9px] opacity-30 italic">Necesario solo para repositorios privados.</p>
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isCreating}
+                className="w-full py-5 bg-[#00FF41] text-black font-black uppercase text-sm tracking-[0.4em] hover:bg-white transition-all shadow-[0_10px_30px_#00FF4144] flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {isCreating ? <><Loader2 className="animate-spin" /> CLONANDO_ENTIDAD...</> : 'ESTABLECER_CONEXIÓN'}
               </button>
             </form>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function Step({ num, text }: { num: string, text: string }) {
+  return (
+    <div className="flex gap-4 items-start">
+       <span className="w-6 h-6 flex items-center justify-center border border-[#00FF41] rounded-sm text-[10px] font-black bg-[#00FF41]/10">{num}</span>
+       <p className="flex-1 text-[#00FF41] opacity-70 leading-relaxed font-bold">{text}</p>
     </div>
   );
 }
