@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 
-// Forzamos el uso de la versión estable v1 para evitar errores 404 de modelos retirados en v1beta
+// Usamos Gemini 2.0 Flash (Habilitado para esta API Key) para máxima potencia y evitar errores 404
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 export async function POST(req: Request) {
   try {
