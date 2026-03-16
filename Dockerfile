@@ -1,35 +1,26 @@
-# Build Stage
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-# Production Stage
-FROM node:20-alpine AS runner
+# Dockerfile de Alto Rendimiento para VUO
+FROM node:20-alpine
 WORKDIR /app
 
-# No forzamos NODE_ENV production aquí para permitir que npm run dev funcione si es necesario
-ENV PORT 3000
-
-# Añadir herramientas fundamentales
+# Instalar dependencias necesarias para Git y el sistema
 RUN apk add --no-cache git bash
 
-# Copiar el build y assets para el modo standalone
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# Copiar configuración de dependencias
+COPY package*.json ./
+RUN npm install
 
-# Copiar el resto del código para permitir el modo desarrollo (previsualizador) en el puerto 3001
-COPY --from=builder /app ./
+# Copiar todo el código fuente
+COPY . .
 
+# Deshabilitamos standalone para evitar problemas de rutas en Coolify
+# Y realizamos el build completo
+RUN npm run build
+
+# Exponemos el puerto de producción y el de desarrollo (vibe coding)
 EXPOSE 3000
 EXPOSE 3001
 
-# Script de inicio dual robusto
-# Lanzamos el servidor de producción (3000) y el de desarrollo (3001) para el vibe coding
-RUN echo -e '#!/bin/sh\nnpm run dev -- -p 3001 & \nnode server.js' > start.sh
-RUN chmod +x start.sh
-
-CMD ["./start.sh"]
+# Script de inicio dual:
+# 1. Servidor de previsualización (dev mode) en puerto 3001
+# 2. Servidor de producción (next start) en puerto 3000 (servido por Coolify)
+CMD ["sh", "-c", "npm run dev -- -p 3001 & npm run start"]
