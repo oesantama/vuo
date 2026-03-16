@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect } from 'react';
 import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles, Cpu, Lock, Shield, LayoutDashboard, HelpCircle, ArrowRight, Loader2, Key } from 'lucide-react';
 import { useOfflineSync } from '@/lib/offlineSync';
