@@ -1,5 +1,5 @@
 'use client';
-import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles } from 'lucide-react';
+import { Plus, Github, FolderCode, WifiOff, RefreshCcw, Info, Send, X, Terminal, GitBranch, Zap, Sparkles, Cpu, Lock, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { useOfflineSync } from '@/lib/offlineSync';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', repo: '' });
   const [projects, setProjects] = useState([
-    { id: 'vuo-dev', name: 'Sistema VUO - Core', repo: 'oesantama/vuo' }
+    { id: 'vuo-dev', name: 'CORE_SYSTEM_VUO', repo: 'oesantama/vuo' }
   ]);
 
   const handleAddProject = (e: React.FormEvent) => {
@@ -22,74 +22,76 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-100 font-sans">
-      <div className="max-w-2xl mx-auto p-4 md:p-8 space-y-10">
-        
-        {/* Branding & Explanation */}
-        <header className="space-y-4 pt-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-600/30">
-              <Sparkles className="text-white" size={24} />
+    <div className="min-h-screen bg-black text-[#00FF41] font-mono selection:bg-[#00FF41] selection:text-black">
+      <div className="scanline" />
+      
+      {/* Header / Cyber HUD */}
+      <header className="border-b-2 border-[#00FF41]/30 p-6 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto flex justify-between items-end">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] tracking-[0.4em] text-[#00FF41]/60">
+              <Cpu size={12} />
+              SYSTEM_V1.0.42_STABLE
             </div>
-            <h1 className="text-4xl font-black tracking-tighter bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              VUO
+            <h1 className="text-5xl font-black tracking-tighter neon-text">
+              VUO<span className="animate-pulse">_</span>
             </h1>
           </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-slate-100">Vibe-Coding Platform</h2>
-            <p className="text-slate-400 leading-relaxed">
-              VUO es un sistema inteligente que te permite programar y desplegar aplicaciones directamente desde tu servidor. 
-              Utiliza IA para escribir código, previsualizar cambios en vivo y sincronizar todo con tu repositorio de GitHub de forma profesional.
-            </p>
-          </div>
-        </header>
-
-        {/* Offline Alert */}
-        {!isOnline && (
-          <div className="flex items-center gap-3 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-400 animate-pulse bg-slate-900/50 backdrop-blur-xl">
-            <WifiOff size={20} />
-            <div className="text-sm">
-              <p className="font-bold">Modo Offline</p>
-              <p className="opacity-80">Edita sin conexión. Los cambios se subirán al volver a línea.</p>
+          <div className="text-right hidden md:block">
+            <p className="text-[10px] text-[#00FF41]/40 uppercase tracking-widest">Connection Status</p>
+            <div className={`text-xs font-bold ${isOnline ? 'text-[#00FF41]' : 'text-red-500 animate-pulse'}`}>
+              {isOnline ? 'ENCRYPTED_ONLINE' : 'LINK_OFFLINE_MODE'}
             </div>
           </div>
-        )}
+        </div>
+      </header>
 
-        {/* Projects Section */}
+      <main className="max-w-4xl mx-auto p-6 space-y-12 pb-24">
+        
+        {/* Terminal Intro */}
+        <section className="cyber-panel p-6 space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#00FF41]/20 pb-2 mb-4">
+            <Terminal size={14} />
+            <span className="text-xs uppercase tracking-widest">Kernel_Info</span>
+          </div>
+          <p className="text-sm leading-relaxed opacity-90">
+            &gt; Inicializando entorno de Vibe-Coding...<br/>
+            &gt; Cargando parámetros de IA (Google Gemini 1.5 Pro)...<br/>
+            &gt; VUO permite la manipulación directa de código fuente y despliegue automatizado.
+          </p>
+        </section>
+
+        {/* Directory Listing */}
         <section className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Tus Proyectos</h3>
+          <div className="flex justify-between items-center border-l-4 border-[#00FF41] pl-4">
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-[0.3em]">Directory: /projects</h3>
+              <p className="text-[10px] opacity-40 uppercase">Active repositories for neural manipulation</p>
+            </div>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 py-2 px-5 rounded-full bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-400 transition-all text-sm font-bold active:scale-95"
+              className="px-6 py-2 border-2 border-[#00FF41] hover:bg-[#00FF41] hover:text-black transition-all font-bold text-xs uppercase tracking-widest active:scale-95 shadow-[0_0_15px_rgba(0,255,65,0.2)]"
             >
-              <Plus size={16} />
-              Añadir Repositorio
+              [+] NEW_ENTITY
             </button>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-6 sm:grid-cols-2">
             {projects.map((project) => (
               <Link key={project.id} href={`/project/${project.id}`}>
-                <div className="p-5 rounded-3xl bg-slate-900/40 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800/60 transition-all group overflow-hidden relative">
-                  <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                    <Github size={120} />
+                <div className="cyber-panel p-6 group cursor-pointer transition-all hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,255,65,0.15)] relative overflow-hidden ring-1 ring-[#00FF41]/10 hover:ring-[#00FF41]/40">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-2 bg-[#00FF41]/10 border border-[#00FF41]/30 text-[#00FF41]">
+                      <FolderCode size={20} />
+                    </div>
+                    <GitBranch size={16} className="opacity-20 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-indigo-500/10 rounded-2xl text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                        <FolderCode size={24} />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-lg text-slate-200">{project.name}</h4>
-                        <p className="text-xs text-slate-500 font-mono flex items-center gap-1">
-                          <Github size={12} /> {project.repo}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="p-2 rounded-full border border-slate-800 group-hover:bg-slate-700">
-                      <Zap size={16} className="text-slate-500 group-hover:text-yellow-400" />
-                    </div>
+                  <h4 className="text-lg font-bold mb-1 tracking-tight group-hover:neon-text transition-all">{project.name}</h4>
+                  <p className="text-[10px] opacity-40 font-mono tracking-tighter truncate underline">{project.repo}</p>
+                  
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 right-0 w-8 h-8 opacity-[0.05] group-hover:opacity-20 transition-opacity pointer-events-none">
+                     <Github size={32} />
                   </div>
                 </div>
               </Link>
@@ -97,89 +99,80 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Guide Section */}
-        <section className="pt-6 space-y-6 border-t border-slate-800/50">
-          <div className="flex items-center gap-2">
-            <Info size={16} className="text-indigo-400" />
-            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">¿Cómo funciona?</h3>
+        {/* How it works / Matrix Code Guide */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-2 border-l-4 border-[#00FF41]/40 pl-4">
+            <h3 className="text-sm font-bold uppercase tracking-[0.3em]">Protocol_Documentation</h3>
           </div>
           
-          <div className="space-y-4">
-            <GuideItem 
-              num="01"
-              title="Vincula tu Proyecto"
-              desc="Añade un repositorio de GitHub que quieras modificar. VUO lo clonará en tu servidor de forma privada."
-            />
-            <GuideItem 
-              num="02"
-              title="Vibe-Coding (IA)"
-              desc="Entra al editor y pide cambios en lenguaje natural. VUO escribirá el código y te mostrará una previsualización real."
-            />
-            <GuideItem 
-              num="03"
-              title="Despliegue Seguro"
-              desc="Una vez estés contento con el resultado, dale a 'Desplegar'. Los cambios se subirán a GitHub y se publicarán."
-            />
+          <div className="grid gap-4 opacity-70">
+            <div className="flex gap-4 items-start">
+              <span className="text-xs font-bold border border-[#00FF41]/40 px-2 py-1">01</span>
+              <div>
+                <h4 className="text-sm font-bold uppercase">Ingress_Repositories</h4>
+                <p className="text-xs opacity-60">Conecta tu código a través de Git. VUO crea una interfaz de conexión binaria.</p>
+              </div>
+            </div>
+            <div className="flex gap-4 items-start">
+              <span className="text-xs font-bold border border-[#00FF41]/40 px-2 py-1">02</span>
+              <div>
+                <h4 className="text-sm font-bold uppercase">IA_Transformation</h4>
+                <p className="text-xs opacity-60">Usa lenguaje natural para reescribir la realidad de tu app. Gemini modula el código en vivo.</p>
+              </div>
+            </div>
+            <div className="flex gap-4 items-start">
+              <span className="text-xs font-bold border border-[#00FF41]/40 px-2 py-1">03</span>
+              <div>
+                <h4 className="text-sm font-bold uppercase">Universal_Deployment</h4>
+                <p className="text-xs opacity-60">Ejecuta el protocolo 'Deploy' para materializar los cambios en la red global.</p>
+              </div>
+            </div>
           </div>
         </section>
-      </div>
+      </main>
 
-      {/* Modal */}
+      {/* Futuristic Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8 space-y-8 shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold">Nuevo Repositorio</h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-500">
-                <X size={20} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="cyber-panel w-full max-w-sm p-8 space-y-8 relative border-2 border-[#00FF41]">
+            <div className="flex justify-between items-center border-b border-[#00FF41]/30 pb-4">
+              <h3 className="text-xl font-black text-white">ADD_NEW_PROCESS</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-[#00FF41]/40 hover:text-[#00FF41]">
+                <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleAddProject} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-500 uppercase px-1">Nombre</label>
+                <label className="text-[10px] uppercase font-bold tracking-widest opacity-50 px-1">process_label</label>
                 <input 
                   autoFocus
                   required
-                  placeholder="Ej: Mi App Increíble"
-                  className="w-full bg-slate-950 border border-slate-800 p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-700"
+                  className="w-full bg-black border-b-2 border-[#00FF41]/30 p-2 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white"
                   value={newProject.name}
                   onChange={e => setNewProject({...newProject, name: e.target.value})}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-slate-500 uppercase px-1">Repo GitHub</label>
+                <label className="text-[10px] uppercase font-bold tracking-widest opacity-50 px-1">git_endpoint</label>
                 <input 
                   required
-                  placeholder="usuario/repositorio"
-                  className="w-full bg-slate-950 border border-slate-800 p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-700"
+                  placeholder="usr/repo"
+                  className="w-full bg-black border-b-2 border-[#00FF41]/30 p-2 focus:border-[#00FF41] outline-none transition-all placeholder:text-[#00FF41]/10 text-white"
                   value={newProject.repo}
                   onChange={e => setNewProject({...newProject, repo: e.target.value})}
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-[#00FF41] text-black font-black uppercase text-sm tracking-widest hover:bg-white transition-all active:scale-95"
               >
-                <Send size={18} />
-                Guardar Proyecto
+                EXECUTE_REGISTRATION
               </button>
             </form>
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function GuideItem({ num, title, desc }: { num: string, title: string, desc: string }) {
-  return (
-    <div className="flex gap-4 group">
-      <div className="text-2xl font-black text-slate-800 group-hover:text-indigo-900/50 transition-colors tabular-nums">{num}</div>
-      <div className="space-y-1">
-        <h4 className="font-bold text-slate-200">{title}</h4>
-        <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
-      </div>
     </div>
   );
 }
