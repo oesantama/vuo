@@ -1,9 +1,9 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { Send, ChevronLeft, Github, Smartphone, Laptop, Monitor, CheckCircle2, Terminal as TerminalIcon, ShieldCheck, Zap, Cpu, Sparkles, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
+import { use } from 'react';
 
-export default function ProjectEditor({ params }: { params: { id: string } }) {
+export default function ProjectEditor({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
+  const projectId = resolvedParams.id;
+  
   const [instruction, setInstruction] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
@@ -24,7 +24,7 @@ export default function ProjectEditor({ params }: { params: { id: string } }) {
       const res = await fetch('/api/vibe/edit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ instruction, projectId: params.id }),
+        body: JSON.stringify({ instruction, projectId }),
       });
       
       const data = await res.json();
@@ -48,7 +48,7 @@ export default function ProjectEditor({ params }: { params: { id: string } }) {
       const res = await fetch('/api/git/push', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId: params.id }),
+        body: JSON.stringify({ projectId }),
       });
       const data = await res.json();
       if (data.success) {

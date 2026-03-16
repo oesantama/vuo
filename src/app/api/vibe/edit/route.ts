@@ -14,9 +14,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Falta GEMINI_API_KEY" }, { status: 500 });
     }
 
-    // Ruta base de proyectos (debe coincidir con el volumen de Docker)
-    const projectsRoot = "/app/projects"; 
-    const projectPath = path.join(projectsRoot, projectId);
+    // Ruta base de proyectos
+    const projectsRoot = process.env.NODE_ENV === 'production' ? "/app/projects" : path.join(process.cwd(), "projects");
+    const projectPath = projectId === 'vuo-dev' ? process.cwd() : path.join(projectsRoot, projectId);
 
     // En un entorno de producción real, aquí leeríamos los archivos del proyecto
     // Para el POC, vamos a simular la edición de un archivo específico
