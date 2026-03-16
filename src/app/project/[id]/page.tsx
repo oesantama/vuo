@@ -162,7 +162,7 @@ export default function ProjectEditor({ params }: { params: Promise<{ id: string
             'w-full max-w-5xl h-[700px] border-[8px] border-[#0d1117]'
           }`}>
             <iframe 
-              src={`/preview?v=${lastUpdate}`}
+              src={`/api/preview?projectId=${projectId}&v=${lastUpdate}`}
               className="w-full h-full bg-slate-50 opacity-95"
               title="VUO_LIVE_PREVIEW"
             />

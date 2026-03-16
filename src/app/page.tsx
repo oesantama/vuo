@@ -240,12 +240,3 @@ function Step({ num, text }: { num: string, text: string }) {
     </div>
   );
 }
-
-function Step({ num, text }: { num: string, text: string }) {
-  return (
-    <div className="flex gap-4 items-start">
-       <span className="w-6 h-6 flex items-center justify-center border border-[#00FF41] rounded-sm text-[10px] font-black bg-[#00FF41]/10">{num}</span>
-       <p className="flex-1 text-[#00FF41] opacity-70 leading-relaxed font-bold">{text}</p>
-    </div>
-  );
-}
