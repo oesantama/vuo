@@ -2,7 +2,7 @@ services:
   vuo:
     build: .
     ports:
-      - "3005:3000"
+      - "5179:3000"
     volumes:
       - projects_data:/app/projects
     environment:
